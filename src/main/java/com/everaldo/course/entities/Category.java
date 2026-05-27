@@ -1,5 +1,6 @@
 package com.everaldo.course.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Setter;
 
@@ -21,7 +22,8 @@ public class Category implements Serializable {
     @Setter
     private String name;
 
-    @Transient
+    @JsonIgnore
+    @ManyToMany(mappedBy = "categories")
     private Set<Product> products = new HashSet<>();
 
     public Category(){
