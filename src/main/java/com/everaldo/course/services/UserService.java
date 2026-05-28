@@ -2,6 +2,7 @@ package com.everaldo.course.services;
 
 import com.everaldo.course.entities.User;
 import com.everaldo.course.repositories.UserRepository;
+import com.everaldo.course.services.exceptions.ResourceNotFoundException;
 import jdk.dynalink.linker.LinkerServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,7 @@ public class UserService {
 
     public User findById(Long id){
         Optional<User> obj = repository.findById(id);
-        return obj.get();
+        return obj.orElseThrow(()-> new ResourceNotFoundException(id));
 
     }
 
@@ -42,7 +43,6 @@ public class UserService {
         entity.setPhone(obj.getPhone());
 
         return repository.save(entity);
-
 
     }
 
