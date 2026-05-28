@@ -4,6 +4,7 @@ import com.everaldo.course.entities.User;
 import com.everaldo.course.repositories.UserRepository;
 import com.everaldo.course.services.exceptions.DatabaseException;
 import com.everaldo.course.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import jdk.dynalink.linker.LinkerServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -36,23 +37,27 @@ public class UserService {
     }
 
     public void delete(Long id){
-       try{
+        try{
 
-        repository.deleteById(id);
-       }catch (EmptyResultDataAccessException e){
-           throw new ResourceNotFoundException(id);
-       }catch (DataIntegrityViolationException e){
-           throw new DatabaseException(e.getMessage());
-       }
+            repository.deleteById(id);
+        }catch (EmptyResultDataAccessException e){
+            throw new ResourceNotFoundException(id);
+        }catch (DataIntegrityViolationException e){
+            throw new DatabaseException(e.getMessage());
+        }
     }
 
     public User update(Long id,User obj){
-        User entity = repository.getReferenceById(id);
-        entity.setName(obj.getName());
-        entity.setEmail(obj.getEmail());
-        entity.setPhone(obj.getPhone());
+        try{
+            User entity = repository.getReferenceById(id);
+            entity.setName(obj.getName());
+            entity.setEmail(obj.getEmail());
+            entity.setPhone(obj.getPhone());
 
-        return repository.save(entity);
+            return repository.save(entity);
+        }catch (EntityNotFoundException e){
+            throw new ResourceNotFoundException(id);
+        }
 
     }
 
